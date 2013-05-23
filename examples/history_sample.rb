@@ -1,4 +1,4 @@
-include '../lib/soap_agent.rb'
+require '../lib/soap_agent.rb'
 
 api_name = "newapi"
 api_key = "password"
@@ -34,7 +34,7 @@ filters = {
 auth = Authentication.new( api_name, api_key, system_account_name )
 agent = SoapAgent.new auth
 
-result = objectToArray agent.history filters
-object = result[:return]
+result = agent.history filters
+object = result.body
 
-pp object.to_json
+p object.to_json

@@ -8,7 +8,7 @@ transaction_id = '0735b5ae-3e90-4cd1-9c5d-a07bac1f7833'
 auth = Authentication.new( api_name, api_key, system_account_name )
 agent = SoapAgent.new auth
 
-result = objectToArray agent.find_transaction transaction_id # Need to rewrite
-object = result[:return]
+result = agent.find_transaction transaction_id
+object = result.body
 
-pp object.to_json
+p object.to_json

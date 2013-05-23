@@ -1,4 +1,4 @@
-include '../lib/soap_agent.rb'
+require '../lib/soap_agent.rb'
 
 api_name = "newapi"
 api_key = "password"
@@ -10,6 +10,6 @@ is_amount_in_src_wallet_currency = false
 auth = Authentication.new( api_name, api_key, system_account_name )
 agent = SoapAgent.new auth
 
-result = objectToArray agent.make_currency_exchange( wallets, is_amount_in_src_wallet_currency ) # Need to rewrite
+result = agent.make_currency_exchange( wallets, is_amount_in_src_wallet_currency )
 
-p result[:return]
+p result.body

@@ -1,4 +1,4 @@
-include '../lib/soap_agent.rb'
+require '../lib/soap_agent.rb'
 
 api_name = "newapi"
 api_key = "password"
@@ -10,6 +10,6 @@ type_of_transaction = ['TRANSFER_INNER_SYSTEM', 'TRANSFER_INNER_ACCOUNT']
 auth = Authentication.new( api_name, api_key, system_account_name )
 agent = SoapAgent.new auth
 
-result = objectToArray agent.make_transfer( type_of_transaction.first, wallets ) # Need to rewrite
+result = agent.make_transfer( type_of_transaction.first, wallets )
 
-p result[:return]
+p result.body
