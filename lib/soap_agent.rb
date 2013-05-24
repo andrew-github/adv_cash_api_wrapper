@@ -3,93 +3,88 @@ class SoapAgent
   require 'date'
   require 'digest'
 
+  WSDL_URL  = 'http://advcash.com:8080/wsm/merchantWebService?wsdl'
+  NAMESPACE = 'http://wsm.system.finance.pro/'
+
   def initialize auth
     @auth = auth
-    @url = 'http://advcash.com:8080/wsm/merchantWebService?wsdl'
     @credentials = {}
   end
 
   def create_client
-    @client = Savon.client( {:wsdl => @url} )
-#    @credentials = {:api_name => @api_name, :authentication_token => @authentication_token, :system_account_name => @system_account_name}
+    @client = Savon.client( {:wsdl => WSDL_URL, :namespace => NAMESPACE} )
     @credentials = {:api_name => @auth.api_name, :authentication_token => @auth.authentication_token, :system_account_name => @auth.system_account_name}
-    @client.operations.each { |e| puts e }
-    puts '************************************'
-    puts @auth.api_name.inspect
-    puts @auth.authentication_token.inspect
-    puts @auth.system_account_name.inspect
-    puts '************************************'
   end
 
   def validate_accounts accounts
     self.create_client
     begin
-      return object_to_array @client.validate_accounts( {:arg0 => @credentials, :arg1 => accounts} ) # Need to rewrite
+      @client.call( :validate_accounts, :message => {:arg0 => @credentials, :arg1 => accounts} )
     rescue Exception => e
-      raise e
+      raise e.message
     end
   end
 
   def get_balances
     self.create_client
     begin
-      return @client.get_balances( {:arg0 => @credentials} )
+      @client.call( :get_balances, :message => {:arg0 => @credentials} )
     rescue Exception => e
-      raise e
+      raise e.message
     end
   end
 
   def history filters
     self.create_client
     begin
-      return @client.call( :history, :message => {:arg0 => @credentials, :arg1 => filters} ) #@client.history( {:arg0 => @credentials, :arg1 => filters} )
-    resque Exception => e
-      raise e
+      @client.call( :history, :message => {:arg0 => @credentials, :arg1 => filters} )
+    rescue Exception => e
+      raise e.message
     end
   end
 
   def find_transaction transaction_id
     self.create_client
     begin
-      return @client.find_transaction( {:arg0 => @credentials, :arg1 => transaction_id} )
-    resque Exception => e
-      raise e
+      @client.call( :find_transaction, :message => {:arg0 => @credentials, :arg1 => transaction_id} )
+    rescue Exception => e
+      raise e.message
     end
   end
 
   def make_currency_exchange( wallets, is_amount_in_src_wallet_currency )
     self.create_client
     begin
-      return @client.make_currency_exchange( {:arg0 => @credentials, :arg1 => wallets, :arg2 => is_amount_in_src_wallet_currency} )
-    resque Exception => e
-      raise e
+      @client.call( :make_currency_exchange, :message => {:arg0 => @credentials, :arg1 => wallets, :arg2 => is_amount_in_src_wallet_currency} )
+    rescue Exception => e
+      raise e.message
     end
   end
 
   def validate_currency_exchange( wallets, is_amount_in_src_wallet_currency )
     self.create_client
     begin
-      return @client.validate_currency_exchange( {:arg0 => @credentials, :arg1 => wallets, :arg2 => is_amount_in_src_wallet_currency} )
-    resque Exception => e
-      raise e
+      @client.call( :validate_currency_exchange, :message => {:arg0 => @credentials, :arg1 => wallets, :arg2 => is_amount_in_src_wallet_currency} )
+    rescue Exception => e
+      raise e.message
     end
   end
 
   def make_transfer( type_of_transaction, wallets )
     self.create_client
     begin
-      return @client.make_transfer( {:arg0 => @credentials, :arg1 => type_of_transaction, :arg2 => wallets} )
-    resque Exception => e
-      raise e
+      @client.call( :make_transfer, :message => {:arg0 => @credentials, :arg1 => type_of_transaction, :arg2 => wallets} )
+    rescue Exception => e
+      raise e.message
     end
   end
 
   def validate_transfer( type_of_transaction, wallets )
     self.create_client
     begin
-      return @client.validate_transfer( {:arg0 => @credentials, :arg1 => type_of_transaction, :arg2 => wallets} )
-    resque Exception => e
-      raise e
+      @client.call( :validate_transfer, :message => {:arg0 => @credentials, :arg1 => type_of_transaction, :arg2 => wallets} )
+    rescue Exception => e
+      raise e.message
     end
   end
 
@@ -107,6 +102,6 @@ class Authentication
   end
 
   def create_auth_token api_key
-    Digest::SHA256.hexdigest "#{api_key}:#{Date.today.strftime("%Y%m%d:%I")}"
+    Digest::SHA256.hexdigest "#{api_key}:#{DateTime.now.new_offset(0).strftime("%Y%m%d:%k")}"
   end
 end

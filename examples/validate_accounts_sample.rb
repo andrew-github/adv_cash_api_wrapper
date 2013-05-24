@@ -10,4 +10,5 @@ agent = SoapAgent.new auth
 
 result = agent.validate_accounts accounts
 
-result.body.each { |object| puts "#{object[:system_account_name]} - #{object[:present]}" }
+puts "Account presence:"
+result.body[:validate_accounts_response][:return].each { |item| puts "#{item[:system_account_name]} - #{item[:present]}" }

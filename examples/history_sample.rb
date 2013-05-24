@@ -35,6 +35,32 @@ auth = Authentication.new( api_name, api_key, system_account_name )
 agent = SoapAgent.new auth
 
 result = agent.history filters
-object = result.body
 
-p object.to_json
+puts "<table border='1'>
+        <tr>
+          <th>Transaction ID</th>
+          <th>Transaction Name</th>
+          <th>Start Date</th>
+          <th>Status</th>
+          <th>Wallet Dest</th>
+          <th>Amount</th>
+          <th>Amount in USD</th>
+          <th>Activity Level</th>
+          <th>Commission</th>
+          <th>Comment</th>
+        </tr>"
+result.body[:history_response][:return].each do |item|
+  puts "<tr>
+          <td>#{item[:id]}</td>
+          <td>#{item[:transaction_name]}</td>
+          <td>#{item[:start_time]}</td>
+          <td>#{item[:status]}</td>
+          <td>#{item[:wallet_dest_id]}</td>
+          <td>#{item[:amount]}</td>
+          <td>#{item[:amount_in_usd]}</td>
+          <td>#{item[:activity_level]}</td>
+          <td>#{item[:full_commission]}</td>
+          <td>#{item[:comment]}</td>
+        </tr>"
+end
+puts "</table>"
